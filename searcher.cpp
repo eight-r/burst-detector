@@ -13,9 +13,9 @@ void search_edit_points(string src, deque<double> *edit_points)
     Mat frame;
     Mat resized_frame;
 
-    Mat icon = imread("icon.png");
-    resize(icon, icon, Size(20, 20));
-
+    // Mat icon = imread("icon.png");
+    // resize(icon, icon, Size(20, 20));
+    Mat hyphen = imread("hyphen.png");
     Mat gameset_image = imread("gemeset_template.png");
 
     int number_of_frame = 0;
@@ -25,13 +25,14 @@ void search_edit_points(string src, deque<double> *edit_points)
     while (cap.read(frame))
     {
         resize(frame, resized_frame, Size(640, 360));
-        Mat cropped_frame(resized_frame, Rect(75, 170, 500, 30));
+        Mat cropped_frame(resized_frame, Rect(294, 140, 53, 29));
 
         Mat matching_result;
-        matchTemplate(cropped_frame, icon, matching_result, TM_CCOEFF_NORMED);
+        matchTemplate(cropped_frame, hyphen, matching_result, TM_CCOEFF_NORMED);
 
         Mat match_mask = Mat::zeros(matching_result.size(), CV_8UC1);
-        match_mask.setTo(1, matching_result > 0.60);
+        match_mask.setTo(1, matching_result > 0.90);
+
         int stock = sum(match_mask)[0];
         if (stock > 0 && (number_of_frame - last_detected > framerate * 3))
         {
@@ -42,10 +43,10 @@ void search_edit_points(string src, deque<double> *edit_points)
         }
 
         // detect gameset
-        Mat cropped_frame_for_gameset(resized_frame, Rect(116, 44, 414, 204));
+        Mat cropped_frame_for_gameset(resized_frame, Rect(125, 45, 400, 200));
         matchTemplate(cropped_frame_for_gameset, gameset_image, matching_result, TM_CCOEFF_NORMED);
         match_mask = Mat::zeros(matching_result.size(), CV_8UC1);
-        match_mask.setTo(1, matching_result > 0.60);
+        match_mask.setTo(1, matching_result > 0.90);
         stock = sum(match_mask)[0];
         if (stock > 0 && (number_of_frame - last_detected > framerate * 3))
         {

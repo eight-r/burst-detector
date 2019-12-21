@@ -8,6 +8,7 @@
     using std::endl;
 #include    <string>
     using   std::string;
+    using   std::to_string;
 #include <deque>
     using   std::deque;
 using namespace cv;
